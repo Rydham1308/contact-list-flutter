@@ -1,9 +1,9 @@
 import 'package:contacts/constants/enums/status.dart';
-import 'package:contacts/constants/widgets/custom_inputfield.dart';
 import 'package:contacts/modules/add_contact/bloc/add_contact_bloc.dart';
 import 'package:contacts/modules/add_contact/model/contact_model.dart';
 import 'package:contacts/modules/add_contact/screens/add_contact.dart';
 import 'package:contacts/modules/home/screens/alert_dialogbox.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,9 +22,19 @@ class AllContactsScreen extends StatefulWidget {
 }
 
 class _AllContactsScreenState extends State<AllContactsScreen> {
+  List<ContactModel> localList = [];
+  List<ContactModel> searchList = [];
+  TextEditingController controller = TextEditingController();
+  FocusNode myFocusNode = FocusNode();
+
+  // bool isGetData = false;
+  ValueNotifier<bool> sort = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isGetData = ValueNotifier<bool>(false);
+
   _showDialog(BuildContext context, int id) {
     continueCallBack() {
       context.read<AddContactBloc>().add(DeleteContactsEvent(id: id));
+      isGetData.value = false;
       Navigator.pop(context);
     }
 
@@ -42,13 +52,100 @@ class _AllContactsScreenState extends State<AllContactsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size(double.maxFinite, 60),
-        child: Padding(
-          padding: EdgeInsets.only(top: 35.0),
-          child: CustomTextFormField(
-            hintText: 'Search',
-          ),
+      appBar: PreferredSize(
+        preferredSize: const Size(double.maxFinite, 170),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 43.0, left: 15, right: 8, bottom: 0),
+              child: Text('Contacts',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 40, color: Colors.deepPurple)),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 0.0, left: 8, right: 8, bottom: 8),
+              child: TextField(
+                focusNode: myFocusNode,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.purple.shade50,
+                  focusColor: Colors.purple.shade50,
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  hintText: "Search Contacts",
+                  hintStyle: TextStyle(
+                      color: myFocusNode.hasFocus ? Colors.deepPurple : Colors.deepPurple),
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: Icon(
+                      Icons.search_rounded,
+                      color: Colors.deepPurple,
+                    ),
+                  ),
+                  border: InputBorder.none,
+                ),
+                controller: controller,
+                onChanged: (value) {
+                  searchList.clear();
+                  for (int i = 0; i < localList.length; i++) {
+                    if (localList[i].fName.toLowerCase().contains(value) ||
+                        localList[i].lName.toLowerCase().contains(value) ||
+                        localList[i].number.toLowerCase().contains(value)) {
+                      searchList.add(localList[i]);
+                    }
+                  }
+                  setState(() {});
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 5, bottom: 5, right: 10),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    sort.value = !sort.value;
+                    localList = localList.reversed.toList();
+                    searchList = searchList.reversed.toList();
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.purple.shade50,
+                      borderRadius: const BorderRadius.all(Radius.circular(30))),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 5),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Sort  :  ',
+                          style: TextStyle(
+                            color: Colors.deepPurple,
+                          ),
+                        ),
+                        Icon(
+                          sort.value ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down,
+                          color: Colors.deepPurple,
+                          size: 14,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       body: BlocConsumer<AddContactBloc, AddContactState>(
@@ -61,107 +158,135 @@ class _AllContactsScreenState extends State<AllContactsScreen> {
               (a, b) => a.fName.toLowerCase().compareTo(b.fName.toLowerCase()),
             );
 
-            // final Map<String, List<ContactModel>> groupedLists = {};
-            //
-            // void groupMyList() {
-            //   state.contactModelList?.forEach((person) {
-            //     if (groupedLists[person.fName[0]] == null) {
-            //       groupedLists[person.fName[0]] = <ContactModel>[];
-            //     }
-            //
-            //     groupedLists[person.fName[0]]?.add(person);
-            //   });
-            // }
+            if (!isGetData.value) {
+              searchList.clear();
+              localList.clear();
+              localList.addAll(state.contactModelList ?? []);
+              searchList.addAll(localList);
+            }
+            isGetData.value = true;
+            sort.value ? searchList.reversed.toList() : searchList;
 
-            return ListView.builder(
-              itemCount: state.contactModelList?.length ?? 0,
-              itemBuilder: (context, index) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddContactScreen.create(),
-                                settings: RouteSettings(arguments: {
-                                  'fName': state.contactModelList?[index].fName,
-                                  'lName': state.contactModelList?[index].lName,
-                                  'phoneNo': state.contactModelList?[index].number,
-                                  'id': state.contactModelList?[index].id,
-                                  'isEdit': true,
-                                }),
-                              ),
-                            ).then(
-                                (value) => context.read<AddContactBloc>().add(GetContactsEvent()));
-                          },
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(top: 8.0, bottom: 8, left: 15, right: 20),
-                            child: CircleAvatar(
-                              radius: 27,
-                              backgroundColor: Colors.purple.shade200,
-                              child: Text(
-                                state.contactModelList?[index].fName[0] ?? '',
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+            if (searchList.isNotEmpty) {
+              return Expanded(
+                child: ValueListenableBuilder(
+                  valueListenable: sort,
+                  builder: (BuildContext context, bool value, Widget? child) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      // reverse: sort.value,
+                      itemCount: searchList.length,
+                      itemBuilder: (context, index) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
-                                Text(
-                                  state.contactModelList?[index].fName ?? '',
-                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AddContactScreen.create(),
+                                        settings: RouteSettings(arguments: {
+                                          'fName': state.contactModelList?[index].fName,
+                                          'lName': state.contactModelList?[index].lName,
+                                          'phoneNo': state.contactModelList?[index].number,
+                                          'id': state.contactModelList?[index].id,
+                                          'isEdit': true,
+                                        }),
+                                      ),
+                                    ).then((value) {
+                                      context.read<AddContactBloc>().add(GetContactsEvent());
+                                      isGetData.value = false;
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8.0, bottom: 8, left: 15, right: 20),
+                                    child: CircleAvatar(
+                                      radius: 27,
+                                      backgroundColor: Colors.purple.shade200,
+                                      child: Text(
+                                        searchList[index].fName[0],
+                                        style: const TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  state.contactModelList?[index].lName ?? '',
-                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          searchList[index].fName,
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.deepPurple.shade900),
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          searchList[index].lName,
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.deepPurple.shade900),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          searchList[index].number,
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.deepPurple.shade900),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                            Row(
-                              children: [
-                                Text(
-                                  state.contactModelList?[index].number ?? '',
-                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  _showDialog(context, searchList[index].id);
+                                },
+                                child: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
                                 ),
-                              ],
+                              ),
                             ),
                           ],
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          _showDialog(context, state.contactModelList?[index].id ?? 0);
-                        },
-                        child: const Icon(
-                          Icons.delete,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            );
+                        );
+                      },
+                    );
+                  },
+                ),
+              );
+            } else {
+              return const Center(
+                child: Text(
+                  'No Contacts',
+                  style: TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.w600, color: Colors.deepPurple),
+                ),
+              );
+            }
           } else if (state is ContactsStates && state.status == Status.isError) {
             return Center(
                 child: Text(
               state.errorMessage ?? '',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.w600, color: Colors.deepPurple),
             ));
           } else {
             return const SizedBox.shrink();
@@ -175,7 +300,10 @@ class _AllContactsScreenState extends State<AllContactsScreen> {
             MaterialPageRoute(
               builder: (context) => AddContactScreen.create(),
             ),
-          ).then((value) => context.read<AddContactBloc>().add(GetContactsEvent()));
+          ).then((value) {
+            context.read<AddContactBloc>().add(GetContactsEvent());
+            isGetData.value = false;
+          });
         },
         tooltip: 'Add Contact',
         child: const Icon(Icons.add),

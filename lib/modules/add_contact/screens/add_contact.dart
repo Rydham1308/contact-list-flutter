@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:contacts/constants/widgets/custom_inputfield.dart';
 import 'package:contacts/modules/add_contact/bloc/add_contact_bloc.dart';
 import 'package:contacts/modules/add_contact/model/contact_model.dart';
@@ -34,7 +33,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
     super.didChangeDependencies();
     final data = ModalRoute.of(context)?.settings.arguments;
 
-    if(data is Map){
+    if (data is Map) {
       firstName.text = data['fName'];
       lastName.text = data['lName'];
       phoneNo.text = data['phoneNo'];
@@ -43,47 +42,66 @@ class _AddContactScreenState extends State<AddContactScreen> {
     }
   }
 
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: isUpdate ? const Text('Create contact') : const Text('Create contact'),
+        iconTheme: const IconThemeData(color: Colors.deepPurple),
+        title: isUpdate
+            ? const Text(
+                'Update contact',
+                style: TextStyle(color: Colors.deepPurple),
+              )
+            : const Text(
+                'Create contact',
+                style: TextStyle(color: Colors.deepPurple),
+              ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
             child: ElevatedButton(
               onPressed: () {
                 if (formAddKey.currentState?.validate() ?? false) {
-
-                  if(isUpdate){
+                  if (isUpdate) {
                     context.read<AddContactBloc>().add(
-                      EditContactsEvent(
-                        contactModel: ContactModel(
-                          fName: firstName.text.trim(),
-                          lName: lastName.text.trim(),
-                          number: phoneNo.text.trim(),
-                          isFav: false,
-                          id: id ?? 0,
-                        ),
-                      ),
-                    );
+                          EditContactsEvent(
+                            contactModel: ContactModel(
+                              fName: firstName.text.trim(),
+                              lName: lastName.text.trim(),
+                              number: phoneNo.text.trim(),
+                              id: id ?? 0,
+                            ),
+                          ),
+                        );
                     Navigator.pop(context);
-                  }else{
+                  } else {
                     context.read<AddContactBloc>().add(
-                      CreateContactEvent(
-                        contactModel: ContactModel(
-                          fName: firstName.text.trim(),
-                          lName: lastName.text.trim(),
-                          number: phoneNo.text.trim(),
-                          isFav: false,
-                          id: Random().nextInt(99999999),
-                        ),
-                      ),
-                    );
+                          CreateContactEvent(
+                            contactModel: ContactModel(
+                              fName: firstName.text.trim(),
+                              lName: lastName.text.trim(),
+                              number: phoneNo.text.trim(),
+                              id: Random().nextInt(99999999),
+                            ),
+                          ),
+                        );
                     Navigator.pop(context);
                   }
-
                 }
               },
               child: const Text('Save'),
@@ -102,7 +120,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.only(top: 25.0, bottom: 0, left: 8, right: 8),
-                    child: Icon(Icons.person_outline_rounded),
+                    child: Icon(Icons.person_outline_rounded, color: Colors.deepPurple),
                   ),
                   Flexible(
                     child: Column(
@@ -131,7 +149,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.only(top: 25.0, bottom: 0, left: 8, right: 8),
-                    child: Icon(Icons.phone),
+                    child: Icon(Icons.phone, color: Colors.deepPurple),
                   ),
                   Flexible(
                     child: Padding(
@@ -152,14 +170,22 @@ class _AddContactScreenState extends State<AddContactScreen> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.only(top: 25.0, bottom: 0, left: 8, right: 8),
-                    child: Icon(Icons.calendar_month_outlined),
+                    child: Icon(Icons.calendar_month_outlined, color: Colors.deepPurple),
                   ),
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: CustomTextFormField(
-                        controller: dob,
-                        hintText: 'Significant date',
+                      child: OutlinedButton(
+                        onPressed: () {
+                          _selectDate(context);
+                          // const DatePicker(restorationId: 'main');
+                        },
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(double.maxFinite, 60),
+                          side: const BorderSide(color: Colors.deepPurple),
+                        ),
+                        child: Text('Open Date Picker',
+                            style: TextStyle(color: Colors.deepPurple.shade200)),
                       ),
                     ),
                   ),

@@ -101,49 +101,49 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         ),
         errorMaxLines: 3,
         hintText: widget.hintText,
-        hintStyle: TextStyle(
-          color: Colors.grey.shade400,
+        hintStyle:  TextStyle(
+          color: Colors.deepPurple.shade100,
           fontSize: 14,
         ),
-        border: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
           borderSide: BorderSide(
             width: 1,
-            color: Colors.grey.shade400,
+            color: Colors.deepPurple
           ),
         ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
+        disabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
           borderSide: BorderSide(
             width: 1,
-            color: Colors.grey.shade400,
+            color: Colors.deepPurple
           ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
           borderSide: BorderSide(
             width: 1,
-            color: Colors.grey.shade400,
+            color: Colors.deepPurple
           ),
         ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
+        errorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
           borderSide: BorderSide(
             width: 1,
-            color: Colors.grey.shade400,
+            color: Colors.deepPurple
           ),
         ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
           borderSide: BorderSide(
             width: 1,
-            color: Colors.grey.shade400,
+            color: Colors.deepPurple
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
           borderSide: BorderSide(
-            color: Colors.grey.shade400,
+            color: Colors.deepPurple,
             width: 1,
           ),
         ),
