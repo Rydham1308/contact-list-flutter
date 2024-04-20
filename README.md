@@ -1,16 +1,19 @@
 # contacts
 
-A new Flutter project.
+A new Flutter project to save contacts on your local device.
 
-## Getting Started
+## Task
 
-This project is a starting point for a Flutter application.
+I have to create an app like Contact list.
 
-A few resources to get you started if this is your first Flutter project:
+**Functionality :**
+- CRUD operations on it.
+- Search bar for the search contact via name or mobile number
+- Sort list based on Ascending and Descending manner.
+- Filter a contact data based on the range of birthdate.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+**Notes:**
+- Initially there is no contact in the list.
+- Section will automatically create when you are adding new contact.
+- have to store those list in your local DB.
+- For design, you can take idea from your devices contact model.
