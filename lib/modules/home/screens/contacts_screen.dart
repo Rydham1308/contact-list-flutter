@@ -168,109 +168,107 @@ class _AllContactsScreenState extends State<AllContactsScreen> {
             sort.value ? searchList.reversed.toList() : searchList;
 
             if (searchList.isNotEmpty) {
-              return Expanded(
-                child: ValueListenableBuilder(
-                  valueListenable: sort,
-                  builder: (BuildContext context, bool value, Widget? child) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      // reverse: sort.value,
-                      itemCount: searchList.length,
-                      itemBuilder: (context, index) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => AddContactScreen.create(),
-                                        settings: RouteSettings(arguments: {
-                                          'fName': state.contactModelList?[index].fName,
-                                          'lName': state.contactModelList?[index].lName,
-                                          'phoneNo': state.contactModelList?[index].number,
-                                          'id': state.contactModelList?[index].id,
-                                          'isEdit': true,
-                                        }),
-                                      ),
-                                    ).then((value) {
-                                      context.read<AddContactBloc>().add(GetContactsEvent());
-                                      isGetData.value = false;
-                                    });
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 8.0, bottom: 8, left: 15, right: 20),
-                                    child: CircleAvatar(
-                                      radius: 27,
-                                      backgroundColor: Colors.purple.shade200,
-                                      child: Text(
-                                        searchList[index].fName[0],
-                                        style: const TextStyle(color: Colors.white),
-                                      ),
+              return ValueListenableBuilder(
+                valueListenable: sort,
+                builder: (BuildContext context, bool value, Widget? child) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    // reverse: sort.value,
+                    itemCount: searchList.length,
+                    itemBuilder: (context, index) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AddContactScreen.create(),
+                                      settings: RouteSettings(arguments: {
+                                        'fName': state.contactModelList?[index].fName,
+                                        'lName': state.contactModelList?[index].lName,
+                                        'phoneNo': state.contactModelList?[index].number,
+                                        'id': state.contactModelList?[index].id,
+                                        'isEdit': true,
+                                      }),
+                                    ),
+                                  ).then((value) {
+                                    context.read<AddContactBloc>().add(GetContactsEvent());
+                                    isGetData.value = false;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 8, left: 15, right: 20),
+                                  child: CircleAvatar(
+                                    radius: 27,
+                                    backgroundColor: Colors.purple.shade200,
+                                    child: Text(
+                                      searchList[index].fName[0],
+                                      style: const TextStyle(color: Colors.white),
                                     ),
                                   ),
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          searchList[index].fName,
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.deepPurple.shade900),
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(
-                                          searchList[index].lName,
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.deepPurple.shade900),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          searchList[index].number,
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.deepPurple.shade900),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  _showDialog(context, searchList[index].id);
-                                },
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        searchList[index].fName,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.deepPurple.shade900),
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        searchList[index].lName,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.deepPurple.shade900),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        searchList[index].number,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.deepPurple.shade900),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                _showDialog(context, searchList[index].id);
+                              },
+                              child: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
                               ),
                             ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               );
             } else {
               return const Center(
