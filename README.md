@@ -29,7 +29,7 @@ To get started with our Flutter Notes App, follow these simple steps:
 
 2. **Navigate to the Project Directory:** Move into the project directory using:
    ```
-   cd flutter-notes-app
+   cd contact-list-flutter
    ```
 
 3. **Install Dependencies:** Install all the required dependencies using Flutter's package manager, Flutter:
