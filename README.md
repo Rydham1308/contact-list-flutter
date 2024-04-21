@@ -24,7 +24,7 @@ To get started with our Flutter Notes App, follow these simple steps:
 
 1. **Clone the Repository:** Begin by cloning the GitHub repository to your local machine using the command:
    ```
-   git clone https://github.com/Rydham1308/flutter_notes
+   git clone https://github.com/Rydham1308/contact-list-flutter
    ```
 
 2. **Navigate to the Project Directory:** Move into the project directory using:
